@@ -1,4 +1,4 @@
-from fastapi import Depends, Query
+from fastapi import Query
 from captylize.ml.manager import model_manager
 from captylize.ml.models.ml_model import Img2TextModel
 
