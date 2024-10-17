@@ -1,3 +1,3 @@
-from curl_cffi import AsyncSession
+from curl_cffi.requests import AsyncSession
 
 async_session = AsyncSession(impersonate="chrome124")
