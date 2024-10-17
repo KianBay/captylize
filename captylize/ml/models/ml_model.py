@@ -14,6 +14,11 @@ class Img2TextModel(ABC):
         self.device = device
         self.use_safetensors = use_safetensors
 
+    @property
+    @abstractmethod
+    def is_loaded(self) -> bool:
+        pass
+
     @abstractmethod
     def load(self):
         pass
