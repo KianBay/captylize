@@ -11,6 +11,8 @@ python = "^3.11"
 fastapi = {extras = ["uvicorn"], version = "^0.115.2"}
 transformers = "^4.45.2"
 uvicorn = "^0.32.0"
+python-multipart = "^0.0.12"
+curl-cffi = "^0.7.3"
 
 
 [tool.poetry.group.dev.dependencies]
