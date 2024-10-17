@@ -16,7 +16,7 @@ class ViTAgeClassifier(Img2TextModel):
 
     @property
     def is_loaded(self) -> bool:
-        return self.model is not None and self.transforms is not None
+        return self.model is not None and self.processor is not None
 
     def load(self):
         self.model = ViTForImageClassification.from_pretrained(
