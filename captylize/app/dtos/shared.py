@@ -1,13 +1,20 @@
-from pydantic import BaseModel, HttpUrl, model_validator, ValidationError
+from fastapi import UploadFile
+from pydantic import BaseModel, HttpUrl, field_validator
 from typing import Optional
+
+ALLOWED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png"]
 
 
 class ImageRequest(BaseModel):
     image_url: Optional[HttpUrl] = None
-    image_file: Optional[bytes] = None
+    image_file: Optional[UploadFile] = None
 
-    @model_validator(mode="before")
-    def validate_image_input(cls, values):
-        if not values.get("image_url") and not values.get("image_file"):
-            raise ValidationError("Either image_url or image_file must be provided.")
-        return values
+    @field_validator("image_url")
+    def validate_image_url(cls, v):
+        if v and not any(
+            v.path.lower().endswith(ext) for ext in ALLOWED_IMAGE_EXTENSIONS
+        ):
+            raise ValueError(
+                f"Invalid image URL extension. Must be one of {ALLOWED_IMAGE_EXTENSIONS}"
+            )
+        return v
