@@ -1,0 +1,1 @@
+uvicorn captylize.app.main:app --reload
