@@ -10,11 +10,12 @@ class ImageRequest(BaseModel):
     image_file: Optional[UploadFile] = None
 
     @field_validator("image_url")
-    def validate_image_url(cls, v):
-        if v and not any(
-            v.path.lower().endswith(ext) for ext in ALLOWED_IMAGE_EXTENSIONS
-        ):
-            raise ValueError(
-                f"Invalid image URL extension. Must be one of {ALLOWED_IMAGE_EXTENSIONS}"
-            )
+    def validate_image_url(cls, v: HttpUrl):
+        if v:
+            if not any(
+                v.path.lower().endswith(f".{ext}") for ext in ALLOWED_IMAGE_EXTENSIONS
+            ):
+                raise ValueError(
+                    f"Invalid image URL extension. Must be one of {ALLOWED_IMAGE_EXTENSIONS}"
+                )
         return v
