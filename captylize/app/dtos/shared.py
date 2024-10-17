@@ -3,8 +3,8 @@ from typing import Optional
 
 
 class ImageRequest(BaseModel):
-    image_url: Optional[HttpUrl]
-    image_file: Optional[bytes]
+    image_url: Optional[HttpUrl] = None
+    image_file: Optional[bytes] = None
 
     @model_validator(mode="before")
     def validate_image_input(cls, values):
