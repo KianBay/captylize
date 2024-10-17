@@ -1,7 +1,7 @@
 from typing import Literal
 from PIL import Image
 import torch
-from transformers import ViTFeatureExtractor, ViTForImageClassification
+from transformers import ViTForImageClassification, ViTImageProcessor
 from captylize.ml.models.ml_model import Img2TextModel
 
 
@@ -25,16 +25,16 @@ class ViTAgeClassifier(Img2TextModel):
             use_safetensors=self.use_safetensors,
         ).to(self.device)
 
-        self.transforms = ViTFeatureExtractor.from_pretrained(
+        self.processor = ViTImageProcessor.from_pretrained(
             "nateraw/vit-age-classifier", cache_dir=self.cache_dir
         )
 
     def unload(self):
         self.model = None
-        self.transforms = None
+        self.processor = None
 
     def predict(self, image: Image.Image):
-        inputs = self.transforms(image, return_tensors="pt").to(self.device)
+        inputs = self.processor(image, return_tensors="pt").to(self.device)
         with torch.no_grad():
             outputs = self.model(**inputs)
         probabilities = outputs.logits.softmax(1)
