@@ -41,6 +41,11 @@ class ModelManager:
         for model in self.age_models.values():
             model.unload()
 
+    def get_age_model(self, model_name: str = None) -> Img2TextModel:
+        if model_name and model_name in self.age_models:
+            return self.age_models[model_name]
+        return self.age_models[self.default_age_model]
+
 
 DEVICE = get_device()
 model_manager = ModelManager(cache_dir="./model_cache", device=DEVICE)
