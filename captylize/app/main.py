@@ -4,14 +4,10 @@ import uvicorn
 
 from captylize.app.routers import analyses
 from captylize.app.http_client import async_session
-from captylize.ml.manager import ModelManager, get_device
+from captylize.ml.manager import model_manager
 
 app = FastAPI(root_path="/api/v1")
 app.include_router(analyses.router)
-
-
-DEVICE = get_device()
-model_manager = ModelManager(cache_dir="./model_cache", device=DEVICE)
 
 
 @app.get("/")

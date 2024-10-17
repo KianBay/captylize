@@ -40,3 +40,7 @@ class ModelManager:
     def unload_models(self):
         for model in self.age_models.values():
             model.unload()
+
+
+DEVICE = get_device()
+model_manager = ModelManager(cache_dir="./model_cache", device=DEVICE)
