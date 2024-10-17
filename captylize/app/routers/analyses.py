@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.dtos.analyses.request import AgeRequest, MoodRequest, NSFWRequest
+from captylize.app.dtos.analyses.request import AgeRequest, MoodRequest, NSFWRequest
 
 router = APIRouter(prefix="/analyses", tags=["analyses"])
 
