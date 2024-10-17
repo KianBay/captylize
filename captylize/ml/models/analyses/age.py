@@ -34,6 +34,8 @@ class ViTAgeClassifier(Img2TextModel):
         self.processor = None
 
     def predict(self, image: Image.Image):
+        if not self.is_loaded:
+            self.load()
         inputs = self.processor(image, return_tensors="pt").to(self.device)
         with torch.no_grad():
             outputs = self.model(**inputs)
