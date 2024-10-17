@@ -38,10 +38,10 @@ class ViTAgeClassifier(Img2TextModel):
         with torch.no_grad():
             outputs = self.model(**inputs)
         probabilities = outputs.logits.softmax(1)
+        probabilities = probabilities.squeeze().cpu().tolist()
 
         result = {
-            self.model.config.id2label[i]: prob.item()
-            for i, prob in enumerate(probabilities)
+            self.model.config.id2label[i]: prob for i, prob in enumerate(probabilities)
         }
 
         return result
