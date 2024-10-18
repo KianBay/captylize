@@ -2,7 +2,10 @@ from typing import Literal
 from PIL import Image
 import torch
 from transformers import ViTForImageClassification, ViTImageProcessor
+from captylize.logger import get_logger
 from captylize.ml.models.ml_model import Img2TextModel
+
+logger = get_logger(__name__)
 
 
 class ViTAgeClassifier(Img2TextModel):
@@ -14,11 +17,8 @@ class ViTAgeClassifier(Img2TextModel):
     ):
         super().__init__(cache_dir, device, use_safetensors)
 
-    @property
-    def is_loaded(self) -> bool:
-        return self.model is not None and self.processor is not None
-
-    def load(self):
+    def _load(self):
+        logger.info(f"Loading model {self.__class__.__name__}")
         self.model = ViTForImageClassification.from_pretrained(
             "nateraw/vit-age-classifier",
             cache_dir=self.cache_dir,
@@ -29,12 +29,16 @@ class ViTAgeClassifier(Img2TextModel):
             "nateraw/vit-age-classifier", cache_dir=self.cache_dir
         )
 
-    def unload(self):
+    def _unload(self):
+        logger.info(f"Unloading model {self.__class__.__name__}")
         self.model = None
         self.processor = None
 
-    def predict(self, image: Image.Image):
+    def _predict(self, image: Image.Image):
         if not self.is_loaded:
+            logger.debug(
+                "Predict was called, but model was not loaded. Loading model..."
+            )
             self.load()
         inputs = self.processor(image, return_tensors="pt").to(self.device)
         with torch.no_grad():

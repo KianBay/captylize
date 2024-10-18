@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from types import NotImplementedType
 from typing import Literal
 from PIL import Image
 
-from captylize.ml.utils.timing import measure_time
+from captylize import logger
 
 
 class Img2TextModel(ABC):
@@ -16,21 +15,34 @@ class Img2TextModel(ABC):
         self.cache_dir = cache_dir
         self.device = device
         self.use_safetensors = use_safetensors
+        self._is_loaded = False
+
+    @abstractmethod
+    def _load(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def _unload(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def _predict(self, image: Image.Image):
+        raise NotImplementedError
 
     @property
-    @abstractmethod
     def is_loaded(self) -> bool:
-        raise NotImplementedError
+        return self._is_loaded
 
-    @abstractmethod
     def load(self):
-        raise NotImplementedError
+        self._load()
+        self._is_loaded = True
 
-    @abstractmethod
     def unload(self):
-        raise NotImplementedError
+        self._unload()
+        self._is_loaded = False
 
-    @abstractmethod
-    @measure_time
     def predict(self, image: Image.Image):
-        raise NotImplementedError
+        if not self._is_loaded:
+            logger.debug(f"Model {self.__class__.__name__} is not loaded. Loading...")
+            self.load()
+        return self._predict(image)
