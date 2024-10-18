@@ -3,6 +3,8 @@ from types import NotImplementedType
 from typing import Literal
 from PIL import Image
 
+from captylize.ml.utils.timing import measure_time
+
 
 class Img2TextModel(ABC):
     def __init__(
@@ -29,5 +31,6 @@ class Img2TextModel(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    @measure_time
     def predict(self, image: Image.Image):
         raise NotImplementedError
