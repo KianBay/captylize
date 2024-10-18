@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from types import NotImplementedType
 from typing import Literal
 from PIL import Image
 
@@ -17,16 +18,16 @@ class Img2TextModel(ABC):
     @property
     @abstractmethod
     def is_loaded(self) -> bool:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def load(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def unload(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def predict(self, image: Image.Image):
-        pass
+        raise NotImplementedError
