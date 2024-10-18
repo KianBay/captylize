@@ -1,8 +1,14 @@
 from fastapi import UploadFile
-from pydantic import BaseModel, HttpUrl, field_validator
+from pydantic import BaseModel, Field, HttpUrl, field_validator
 from typing import Optional
 
 ALLOWED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png"]
+
+
+class InferenceResponse(BaseModel):
+    prediction_duration: float = Field(
+        ..., description="The duration of the prediction in milliseconds"
+    )
 
 
 class ImageRequest(BaseModel):

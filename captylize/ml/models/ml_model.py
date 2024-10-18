@@ -3,6 +3,7 @@ from typing import Literal
 from PIL import Image
 
 from captylize import logger
+from captylize.ml.utils.timing import measure_time
 
 
 class Img2TextModel(ABC):
@@ -41,6 +42,7 @@ class Img2TextModel(ABC):
         self._unload()
         self._is_loaded = False
 
+    @measure_time
     def predict(self, image: Image.Image):
         if not self._is_loaded:
             logger.debug(f"Model {self.__class__.__name__} is not loaded. Loading...")

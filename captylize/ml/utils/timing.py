@@ -8,7 +8,7 @@ def measure_time(func):
         start_time = time.perf_counter_ns()
         result = func(*args, **kwargs)
         end_time = time.perf_counter_ns()
-        execution_time_ms = end_time - start_time / 1_000_000
+        execution_time_ms = (end_time - start_time) / 1_000_000
         return result, execution_time_ms
 
     return wrapper

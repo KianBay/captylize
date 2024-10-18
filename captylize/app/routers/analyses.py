@@ -22,8 +22,11 @@ async def create_age_analysis(
     logger.info("Creating age analysis")
     try:
         image = await get_image(image_input.image_url, image_input.image_file)
-        result = age_model.predict(image)
-        return AgeResponse.from_prediction(result)
+        result, duration = age_model.predict(image)
+        logger.info(f"Age analysis result: {result}")
+        return AgeResponse.from_prediction(
+            prediction=result, prediction_duration=duration
+        )
     except ValidationError as e:
         logger.error(f"Validation error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
