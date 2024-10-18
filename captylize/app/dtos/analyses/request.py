@@ -5,7 +5,7 @@ class AgeRequest(ImageRequest):
     pass
 
 
-class MoodRequest(ImageRequest):
+class EmotionRequest(ImageRequest):
     pass
 
 

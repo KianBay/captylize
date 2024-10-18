@@ -3,7 +3,7 @@ from pydantic import ValidationError
 
 from captylize.app.dtos.analyses.response import AgeResponse
 from captylize.logger import get_logger
-from captylize.app.dtos.analyses.request import AgeRequest, MoodRequest, NSFWRequest
+from captylize.app.dtos.analyses.request import AgeRequest, EmotionRequest, NSFWRequest
 from captylize.app.routers.shared import validate_image_input
 from captylize.app.utils import get_image
 from captylize.app.dependencies.ml_models import get_age_model
@@ -38,9 +38,9 @@ async def create_age_analysis(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/moods")
-async def create_mood_analysis(
-    image_input: MoodRequest = Depends(validate_image_input),
+@router.post("/emotions")
+async def create_emotion_analysis(
+    image_input: EmotionRequest = Depends(validate_image_input),
 ):
     try:
         image = await get_image(image_input.image_url, image_input.image_file)
