@@ -8,7 +8,7 @@ from captylize.ml.models.ml_model import Img2TextModel
 logger = get_logger(__name__)
 
 
-class ViTAgeClassifier(Img2TextModel):
+class ViTAgeClassifier(Img2TextModel[dict[str, float]]):
     def __init__(
         self,
         cache_dir: str,

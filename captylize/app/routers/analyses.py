@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 @router.post("/ages")
 async def create_age_analysis(
     image_input: AgeRequest = Depends(validate_image_input),
-    age_model: Img2TextModel = Depends(get_age_model),
+    age_model: Img2TextModel[dict[str, float]] = Depends(get_age_model),
 ):
     logger.info("Creating age analysis")
     try:

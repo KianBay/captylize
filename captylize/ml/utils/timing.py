@@ -1,10 +1,13 @@
 import time
 from functools import wraps
+from typing import Callable, TypeVar, Tuple, Any
+
+T = TypeVar("T")
 
 
-def measure_time(func):
+def measure_time(func: Callable[..., T]) -> Callable[..., Tuple[T, float]]:
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Tuple[T, float]:
         start_time = time.perf_counter_ns()
         result = func(*args, **kwargs)
         end_time = time.perf_counter_ns()
