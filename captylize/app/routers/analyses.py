@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 async def create_age_analysis(
     image_input: AgeRequest = Depends(validate_image_input),
     age_model: Img2TextModel[dict[str, float]] = Depends(get_age_model),
-):
+) -> AgeResponse:
     logger.info("Creating age analysis")
     try:
         image = await get_image(image_input.image_url, image_input.image_file)
