@@ -20,3 +20,17 @@ class AgeResponse(InferenceResponse):
             probabilities=prediction,
             prediction_duration=prediction_duration,
         )
+
+
+class EmotionResponse(InferenceResponse):
+    predicted_emotion: str
+    probabilities: dict[str, float]
+
+    @classmethod
+    def from_prediction(cls, prediction: dict[str, float], prediction_duration: float):
+        predicted_emotion = max(prediction, key=prediction.get)
+        return cls(
+            predicted_emotion=predicted_emotion,
+            probabilities=prediction,
+            prediction_duration=prediction_duration,
+        )

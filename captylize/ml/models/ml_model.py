@@ -2,10 +2,12 @@ from abc import ABC, abstractmethod
 from typing import Literal, TypeVar, Generic
 from PIL import Image
 
-from captylize import logger
+from captylize.logger import get_logger
 from captylize.ml.utils.timing import measure_time
 
 T = TypeVar("T")
+
+logger = get_logger(__name__)
 
 
 class Img2TextModel(ABC, Generic[T]):
