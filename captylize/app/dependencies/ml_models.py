@@ -48,7 +48,7 @@ async def get_vit_caption_model(
     ),
 ) -> BasicCaptionModel:
     return model_manager.get_model(
-        ModelCategory.GENERATION, GenerationType.BASIC_CAPTION, model_name
+        ModelCategory.GENERATION, GenerationType.VIT_CAPTION, model_name
     )
 
 
@@ -64,5 +64,5 @@ async def get_florence2_caption_model(
 ) -> AdvancedCaptionModel:
     model_key = f"florence2_{version}_{size}"
     return model_manager.get_model(
-        ModelCategory.GENERATION, GenerationType.ADVANCED_CAPTION, model_key
+        ModelCategory.GENERATION, GenerationType.FLORENCE2_CAPTION, model_key
     )
