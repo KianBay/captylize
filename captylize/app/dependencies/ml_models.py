@@ -1,4 +1,6 @@
 from fastapi import Query
+from typing import Optional
+from captylize.app.dtos.generations.request import Florence2CaptionParams
 from captylize.ml.manager import (
     model_manager,
     ModelCategory,
@@ -50,6 +52,19 @@ async def get_vit_caption_model(
     return model_manager.get_model(
         ModelCategory.GENERATION, GenerationType.VIT_CAPTION, model_name
     )
+
+
+async def get_florence2_caption_params(
+    task: Optional[str] = Query(
+        None,
+        description="The task to use the model for. Available tasks depend on specific model - check docs.",
+    ),
+    prompt: Optional[str] = Query(
+        None,
+        description="Prompt to guide the model's caption generation. Can be left empty to use the default prompt.",
+    ),
+) -> Florence2CaptionParams:
+    return Florence2CaptionParams(task=task, prompt=prompt)
 
 
 async def get_florence2_caption_model(

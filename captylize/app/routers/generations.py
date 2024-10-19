@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import ValidationError
+
 
 from captylize.app.dependencies.ml_models import (
     get_florence2_caption_model,
+    get_florence2_caption_params,
     get_vit_caption_model,
 )
 from captylize.app.dtos.generations.request import (
@@ -45,7 +47,7 @@ async def create_vit_caption(
 @router.post("/captions/florence-2")
 async def create_florence_2_caption(
     image_input: ImageRequest = Depends(validate_image_input),
-    caption_params: Florence2CaptionParams = Depends(),
+    caption_params: Florence2CaptionParams = Depends(get_florence2_caption_params),
     caption_model=Depends(get_florence2_caption_model),
 ) -> CaptionResponse:
     try:
