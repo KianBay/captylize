@@ -43,7 +43,7 @@ class AgeResponse(InferenceResponse):
     probabilities: dict[AgeRange, float] = Field(
         ...,
         description="The probabilities of each age range",
-        example={age_range: 0.0 for age_range in AgeRange},
+        example={age_range: 0.4 for age_range in AgeRange},
     )
 
     @classmethod
@@ -66,7 +66,7 @@ class EmotionResponse(InferenceResponse):
     probabilities: dict[Emotion, float] = Field(
         ...,
         description="The probabilities of each emotion",
-        example={emotion: 0.0 for emotion in Emotion},
+        example={emotion: 0.6 for emotion in Emotion},
     )
 
     @classmethod
@@ -89,7 +89,7 @@ class NSFWResponse(InferenceResponse):
     probabilities: dict[NsfwCategory, float] = Field(
         ...,
         description="The probabilities of each NSFW category - exact fields may vary by model; check documentation for specific model. Always expect sfw and nsfw.",
-        example={category: 0.0 for category in NsfwCategory},
+        example={category: 0.3 for category in NsfwCategory},
     )
 
     @classmethod

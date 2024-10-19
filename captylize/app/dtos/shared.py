@@ -12,8 +12,18 @@ class InferenceResponse(BaseModel):
 
 
 class ImageRequest(BaseModel):
-    image_url: Optional[HttpUrl] = None
-    image_file: Optional[UploadFile] = None
+    """
+    Accepts either an image URL or an image file, NOT both.
+    """
+
+    image_url: Optional[HttpUrl] = Field(
+        None,
+        description=f"The URL of the image to analyze, must resolve to a {ALLOWED_IMAGE_EXTENSIONS} file.",
+    )
+    image_file: Optional[UploadFile] = Field(
+        None,
+        description=f"The image file to analyze, must be of type {ALLOWED_IMAGE_EXTENSIONS}.",
+    )
 
     @field_validator("image_url")
     def validate_image_url(cls, v: HttpUrl):
