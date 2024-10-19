@@ -171,7 +171,7 @@ model_manager.register_model(
 
 model_manager.register_model(
     ModelCategory.GENERATION,
-    GenerationType.BASIC_CAPTION,
+    GenerationType.VIT_CAPTION,
     "vit_gpt2_image_captioning",
     "nlpconnect/vit-gpt2-image-captioning",
     VitGPT2CaptionModel,
