@@ -4,6 +4,14 @@ from typing import Type, Any, Optional, Literal
 
 import torch
 
+from captylize.ml.models.caption.advanced.florence_2 import (
+    Florence2FluxModel,
+    Florence2PromptGenModel,
+    Florence2StandardModel,
+)
+from captylize.ml.models.caption.basic.vit_gpt2_image_captioning import (
+    VitGPT2CaptionModel,
+)
 from captylize.ml.models.vit_model import ViTImg2TextModel
 
 
@@ -19,7 +27,8 @@ class AnalysesType(StrEnum):
 
 
 class GenerationType(StrEnum):
-    CAPTION = "caption"
+    BASIC_CAPTION = "basic_caption"
+    ADVANCED_CAPTION = "advanced_caption"
 
 
 ModelType = AnalysesType | GenerationType
@@ -132,6 +141,8 @@ class ModelManager:
 
 model_manager = ModelManager(cache_dir="./model_cache")
 
+# ANALYSES REGISTRATION
+
 model_manager.register_model(
     ModelCategory.ANALYSES,
     AnalysesType.AGE,
@@ -155,4 +166,65 @@ model_manager.register_model(
     "AdamCodd/vit-base-nsfw-detector",
     ViTImg2TextModel,
     is_default=True,
+)
+# BASIC CAPTION REGISTRATION
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.BASIC_CAPTION,
+    "vit_gpt2_image_captioning",
+    "nlpconnect/vit-gpt2-image-captioning",
+    VitGPT2CaptionModel,
+    is_default=True,
+)
+
+# ADVANCED CAPTION REGISTRATION
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_large",
+    "microsoft/Florence-2-large",
+    Florence2StandardModel,
+    is_default=True,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_base",
+    "microsoft/Florence-2-base",
+    Florence2StandardModel,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_promptgen_large",
+    "MiaoshouAI/Florence-2-large-PromptGen-v1.5",
+    Florence2PromptGenModel,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_promptgen_base",
+    "MiaoshouAI/Florence-2-base-PromptGen-v1.5",
+    Florence2PromptGenModel,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_flux_large",
+    "gokaygokay/Florence-2-Flux-Large",
+    Florence2FluxModel,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_flux_base",
+    "gokaygokay/Florence-2-Flux",
+    Florence2FluxModel,
 )

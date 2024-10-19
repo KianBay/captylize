@@ -3,7 +3,7 @@ from fastapi import FastAPI
 import uvicorn
 
 from captylize.logger import get_logger
-from captylize.app.routers import analyses
+from captylize.app.routers import analyses, generations
 from captylize.app.http_client import async_session
 from captylize.ml.manager import model_manager
 
@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 async def lifespan(app: FastAPI):
     logger.info("Starting up")
     # Before yield is on startup
-    model_manager.load_default_models()
+    # model_manager.load_default_models() # Uncomment to load all default models
     yield
     # After yield is on shutdown
     model_manager.unload_all_models()
@@ -24,6 +24,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(root_path="/api/v1", lifespan=lifespan)
 app.include_router(analyses.router)
+app.include_router(generations.router)
 
 
 @app.get("/")
