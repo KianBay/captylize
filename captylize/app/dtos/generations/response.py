@@ -3,7 +3,7 @@ from pydantic import Field
 from captylize.app.dtos.shared import InferenceResponse
 
 
-class BasicCaptionResponse(InferenceResponse):
+class CaptionResponse(InferenceResponse):
     caption: str = Field(
         ...,
         description="The generated caption for the image.",
