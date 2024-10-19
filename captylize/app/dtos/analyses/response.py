@@ -7,6 +7,8 @@ AgeRange = Literal[
     "0-2", "3-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70+"
 ]
 
+Emotion = Literal["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
+
 
 class AgeResponse(InferenceResponse):
     predicted_age: AgeRange
@@ -23,7 +25,7 @@ class AgeResponse(InferenceResponse):
 
 
 class EmotionResponse(InferenceResponse):
-    predicted_emotion: str
+    predicted_emotion: Emotion
     probabilities: dict[str, float]
 
     @classmethod
