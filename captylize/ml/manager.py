@@ -1,87 +1,150 @@
+from dataclasses import dataclass
+from enum import StrEnum
+from typing import Type, Any, Optional, Literal
+
 import torch
-import os
+
+from captylize.ml.models.vit_model import ViTImg2TextModel
 
 
-from typing import Literal
-
-from captylize.ml.models.ml_model import Img2TextModel
-from captylize.ml.models.analyses.age import ViTAgeClassifier
-from captylize.ml.models.analyses.emotion import VitEmotionClassifier
-from captylize.ml.models.analyses.nsfw import VitNSFWDetector
+class ModelCategory(StrEnum):
+    ANALYSES = "analyses"
+    GENERATION = "generation"
 
 
-def get_device() -> Literal["cpu", "cuda", "mps"]:
-    if torch.backends.mps.is_available():
-        return "mps"
-    elif torch.cuda.is_available():
-        return "cuda"
-    else:
-        return "cpu"
+class AnalysesType(StrEnum):
+    AGE = "age"
+    EMOTION = "emotion"
+    NSFW = "nsfw"
+
+
+class GenerationType(StrEnum):
+    CAPTION = "caption"
+
+
+ModelType = AnalysesType | GenerationType
+
+
+@dataclass
+class ModelInfo:
+    path: str
+    model_class: Type[Any]
+    is_default: bool = False
 
 
 class ModelManager:
     def __init__(
         self,
         cache_dir: str = "./model_cache",
-        device: Literal["cpu", "cuda", "mps"] = "cpu",
+        device: Optional[Literal["cpu", "cuda", "mps"]] = None,
     ):
+        if device is None:
+            self.device = self._get_device()
+        else:
+            self.device = device
+
         self.cache_dir = cache_dir
-        self.device = device
-
-        self.age_models: dict[str, Img2TextModel] = {
-            "ViTAgeClassifier": ViTAgeClassifier(
-                cache_dir=self.cache_dir, device=self.device
-            )
+        self.registry = dict[ModelCategory, dict[ModelType, dict[str, ModelInfo]]] = {
+            category: {} for category in ModelCategory
         }
-        self.default_age_model: Literal["ViTAgeClassifier"] = "ViTAgeClassifier"
-
-        self.emotion_models: dict[str, Img2TextModel] = {
-            "VitEmotionClassifier": VitEmotionClassifier(
-                cache_dir=self.cache_dir, device=self.device
-            )
+        self.loaded_models: dict[ModelCategory, dict[ModelType, dict[str, Any]]] = {
+            category: {} for category in ModelCategory
         }
-        self.default_emotion_model: Literal["VitEmotionClassifier"] = (
-            "VitEmotionClassifier"
+
+    def _get_device(self) -> Literal["cpu", "cuda", "mps"]:
+        if torch.backends.mps.is_available():
+            return "mps"
+        elif torch.cuda.is_available():
+            return "cuda"
+        else:
+            return "cpu"
+
+    def register_model(
+        self,
+        category: ModelCategory,
+        model_type: ModelType,
+        name: str,
+        path: str,
+        model_class: Type[Any],
+        is_default: bool = False,
+    ):
+        self.registry[category][model_type][name] = ModelInfo(
+            path, model_class, is_default
         )
 
-        self.nsfw_models: dict[str, Img2TextModel] = {
-            "VitNSFWDetector": VitNSFWDetector(
-                cache_dir=self.cache_dir, device=self.device
+    def get_model(
+        self, category: ModelCategory, model_type: ModelType, name: Optional[str] = None
+    ):
+        if name is None:
+            name = next(
+                model_name
+                for model_name, model_info in self.registry[category][
+                    model_type
+                ].items()
+                if model_info.is_default
             )
-        }
-        self.default_nsfw_model: Literal["VitNSFWDetector"] = "VitNSFWDetector"
+        if (
+            model_type not in self.loaded_models[category]
+            or name not in self.loaded_models[category][model_type]
+        ):
+            self._load_model(category, model_type, name)
 
-    def load_models(self):
-        for model in self.age_models.values():
-            model.load()
-        for model in self.emotion_models.values():
-            model.load()
-        for model in self.nsfw_models.values():
-            model.load()
+        return self.loaded_models[category][model_type][name]
 
-    def unload_models(self):
-        for model in self.age_models.values():
-            model.unload()
-        for model in self.emotion_models.values():
-            model.unload()
-        for model in self.nsfw_models.values():
-            model.unload()
+    def _load_model(self, category: ModelCategory, model_type: ModelType, name: str):
+        model_info = self.registry[category][model_type][name]
+        if model_type not in self.loaded_models[category]:
+            self.loaded_models[category][model_type] = {}
+        self.loaded_models[category][model_type][name] = model_info.model_class(
+            model_name=name, cache_dir=self.cache_dir, device=self.device
+        )
+        self.loaded_models[category][model_type][name].load()
 
-    def get_age_model(self, model_name: str = None) -> Img2TextModel:
-        if model_name and model_name in self.age_models:
-            return self.age_models[model_name]
-        return self.age_models[self.default_age_model]
+    def load_default_models(self):
+        for category in self.registry:
+            for model_type in self.registry[category]:
+                default_model = next(
+                    (
+                        name
+                        for name, info in self.registry[category][model_type].items()
+                        if info.is_default
+                    ),
+                    None,
+                )
+                if default_model:
+                    self._load_model(category, model_type, default_model)
 
-    def get_emotion_model(self, model_name: str = None) -> Img2TextModel:
-        if model_name and model_name in self.emotion_models:
-            return self.emotion_models[model_name]
-        return self.emotion_models[self.default_emotion_model]
-
-    def get_nsfw_model(self, model_name: str = None) -> Img2TextModel:
-        if model_name and model_name in self.nsfw_models:
-            return self.nsfw_models[model_name]
-        return self.nsfw_models[self.default_nsfw_model]
+    def unload_all_models(self):
+        for category in self.loaded_models.values():
+            for model_type in category.values():
+                for model in model_type.values():
+                    model.unload()
+        self.loaded_models = {category: {} for category in ModelCategory}
 
 
-DEVICE = get_device()
-model_manager = ModelManager(cache_dir="./model_cache", device=DEVICE)
+model_manager = ModelManager(cache_dir="./model_cache")
+
+model_manager.register_model(
+    ModelCategory.ANALYSES,
+    AnalysesType.AGE,
+    "vit_age_classifier",
+    "nateraw/vit-age-classifier",
+    ViTImg2TextModel,
+    is_default=True,
+)
+model_manager.register_model(
+    ModelCategory.ANALYSES,
+    AnalysesType.EMOTION,
+    "vit_emotion_classifier",
+    "dima806/facial_emotions_image_detection",
+    ViTImg2TextModel,
+    is_default=True,
+)
+model_manager.register_model(
+    ModelCategory.ANALYSES,
+    AnalysesType.NSFW,
+    "vit_nsfw_detector",
+    "AdamCodd/vit-base-nsfw-detector",
+    ViTImg2TextModel,
+    is_default=True,
+)
