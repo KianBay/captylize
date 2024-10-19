@@ -1,12 +1,24 @@
 from fastapi import Form, File, UploadFile
 from pydantic import ValidationError
+from typing import Optional
 
 from captylize.app.dtos.shared import ImageRequest, ALLOWED_IMAGE_EXTENSIONS
 
 
 async def validate_image_input(
-    image_url: str = Form(default=None), image_file: UploadFile = File(default=None)
+    image_url: Optional[str] = Form(
+        default=None,
+        description=f"The URL of the image to analyze. Must resolve to a {ALLOWED_IMAGE_EXTENSIONS} file.",
+    ),
+    image_file: Optional[UploadFile] = File(
+        default=None,
+        description=f"The image file to analyze. Must be of type {ALLOWED_IMAGE_EXTENSIONS}.",
+    ),
 ) -> ImageRequest:
+    """
+    Validates the input for image analysis.
+    Accepts either an image URL or an uploaded image file, but not both.
+    """
     if image_file and image_file.filename and image_url:
         raise ValueError("Provide either image_url or image_file, not both.")
 
