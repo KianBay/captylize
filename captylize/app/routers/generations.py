@@ -15,6 +15,7 @@ from captylize.app.dtos.shared import ImageRequest
 from captylize.app.routers.shared import validate_image_input
 from captylize.app.utils import get_image
 from captylize.logger import get_logger
+from captylize.ml.models.caption.advanced.base import AdvancedCaptionModel
 
 
 router = APIRouter(prefix="/generations")
@@ -35,7 +36,7 @@ async def create_vit_caption(
         )
     except ValidationError as e:
         logger.error(f"Validation error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=422, detail=str(e))
     except RuntimeError as e:
         logger.error(f"Runtime error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -48,7 +49,7 @@ async def create_vit_caption(
 async def create_florence_2_caption(
     image_input: ImageRequest = Depends(validate_image_input),
     caption_params: Florence2CaptionParams = Depends(get_florence2_caption_params),
-    caption_model=Depends(get_florence2_caption_model),
+    caption_model: AdvancedCaptionModel = Depends(get_florence2_caption_model),
 ) -> CaptionResponse:
     try:
         image = await get_image(image_input.image_url, image_input.image_file)
@@ -61,10 +62,10 @@ async def create_florence_2_caption(
 
     except ValidationError as e:
         logger.error(f"Validation error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=422, detail=str(e))
     except ValueError as e:
         logger.error(f"Value error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=422, detail=str(e))
     except RuntimeError as e:
         logger.error(f"Runtime error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
