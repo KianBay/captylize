@@ -36,3 +36,17 @@ class EmotionResponse(InferenceResponse):
             probabilities=prediction,
             prediction_duration=prediction_duration,
         )
+
+
+class NSFWResponse(InferenceResponse):
+    predicted_category: str
+    probabilities: dict[str, float]
+
+    @classmethod
+    def from_prediction(cls, prediction: dict[str, float], prediction_duration: float):
+        predicted_category = max(prediction, key=prediction.get)
+        return cls(
+            predicted_category=predicted_category,
+            probabilities=prediction,
+            prediction_duration=prediction_duration,
+        )

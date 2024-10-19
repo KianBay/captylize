@@ -7,6 +7,7 @@ from typing import Literal
 from captylize.ml.models.ml_model import Img2TextModel
 from captylize.ml.models.analyses.age import ViTAgeClassifier
 from captylize.ml.models.analyses.emotion import VitEmotionClassifier
+from captylize.ml.models.analyses.nsfw import VitNSFWDetector
 
 
 def get_device() -> Literal["cpu", "cuda", "mps"]:
@@ -43,16 +44,27 @@ class ModelManager:
             "VitEmotionClassifier"
         )
 
+        self.nsfw_models: dict[str, Img2TextModel] = {
+            "VitNSFWDetector": VitNSFWDetector(
+                cache_dir=self.cache_dir, device=self.device
+            )
+        }
+        self.default_nsfw_model: Literal["VitNSFWDetector"] = "VitNSFWDetector"
+
     def load_models(self):
         for model in self.age_models.values():
             model.load()
         for model in self.emotion_models.values():
+            model.load()
+        for model in self.nsfw_models.values():
             model.load()
 
     def unload_models(self):
         for model in self.age_models.values():
             model.unload()
         for model in self.emotion_models.values():
+            model.unload()
+        for model in self.nsfw_models.values():
             model.unload()
 
     def get_age_model(self, model_name: str = None) -> Img2TextModel:
@@ -64,6 +76,11 @@ class ModelManager:
         if model_name and model_name in self.emotion_models:
             return self.emotion_models[model_name]
         return self.emotion_models[self.default_emotion_model]
+
+    def get_nsfw_model(self, model_name: str = None) -> Img2TextModel:
+        if model_name and model_name in self.nsfw_models:
+            return self.nsfw_models[model_name]
+        return self.nsfw_models[self.default_nsfw_model]
 
 
 DEVICE = get_device()

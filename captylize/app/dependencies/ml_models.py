@@ -13,3 +13,9 @@ async def get_emotion_model(
     model_name: str = Query(None, description="The name of the model to use"),
 ) -> Img2TextModel[dict[str, float]]:
     return model_manager.get_emotion_model(model_name)
+
+
+async def get_nsfw_model(
+    model_name: str = Query(None, description="The name of the model to use"),
+) -> Img2TextModel[dict[str, float]]:
+    return model_manager.get_nsfw_model(model_name)
