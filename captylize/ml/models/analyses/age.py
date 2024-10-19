@@ -3,7 +3,7 @@ from PIL import Image
 import torch
 from transformers import ViTForImageClassification, ViTImageProcessor
 from captylize.logger import get_logger
-from captylize.ml.models.ml_model import Img2TextModel
+from captylize.ml.models.img_to_text_model import Img2TextModel
 
 logger = get_logger(__name__)
 

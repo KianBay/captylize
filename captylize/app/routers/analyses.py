@@ -15,7 +15,7 @@ from captylize.app.dependencies.ml_models import (
     get_emotion_model,
     get_nsfw_model,
 )
-from captylize.ml.models.ml_model import Img2TextModel
+from captylize.ml.models.img_to_text_model import Img2TextModel
 
 router = APIRouter(prefix="/analyses", tags=["analyses"])
 

@@ -1,6 +1,6 @@
 from fastapi import Query
 from captylize.ml.manager import model_manager, ModelCategory, AnalysesType
-from captylize.ml.models.ml_model import Img2TextModel
+from captylize.ml.models.img_to_text_model import Img2TextModel
 
 
 async def get_age_model(
