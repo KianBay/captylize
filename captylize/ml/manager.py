@@ -44,7 +44,7 @@ class ModelManager:
             self.device = device
 
         self.cache_dir = cache_dir
-        self.registry = dict[ModelCategory, dict[ModelType, dict[str, ModelInfo]]] = {
+        self.registry: dict[ModelCategory, dict[ModelType, dict[str, ModelInfo]]] = {
             category: {} for category in ModelCategory
         }
         self.loaded_models: dict[ModelCategory, dict[ModelType, dict[str, Any]]] = {
@@ -68,6 +68,10 @@ class ModelManager:
         model_class: Type[Any],
         is_default: bool = False,
     ):
+        if category not in self.registry:
+            self.registry[category] = {}
+        if model_type not in self.registry[category]:
+            self.registry[category][model_type] = {}
         self.registry[category][model_type][name] = ModelInfo(
             path, model_class, is_default
         )
