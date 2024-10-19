@@ -27,6 +27,7 @@ ModelType = AnalysesType | GenerationType
 
 @dataclass
 class ModelInfo:
+    name: str
     path: str
     model_class: Type[Any]
     is_default: bool = False
@@ -73,7 +74,7 @@ class ModelManager:
         if model_type not in self.registry[category]:
             self.registry[category][model_type] = {}
         self.registry[category][model_type][name] = ModelInfo(
-            path, model_class, is_default
+            name=name, path=path, model_class=model_class, is_default=is_default
         )
 
     def get_model(
@@ -100,7 +101,7 @@ class ModelManager:
         if model_type not in self.loaded_models[category]:
             self.loaded_models[category][model_type] = {}
         self.loaded_models[category][model_type][name] = model_info.model_class(
-            model_name=name, cache_dir=self.cache_dir, device=self.device
+            model_location=model_info.path, cache_dir=self.cache_dir, device=self.device
         )
         self.loaded_models[category][model_type][name].load()
 
