@@ -1,6 +1,7 @@
-from typing import Optional, ClassVar
+from typing import Optional, ClassVar, TypeVar
 from PIL import Image
 from captylize.ml.models.img_to_text_model import Img2TextModel
+from captylize.ml.utils.timing import measure_time
 
 
 class AdvancedCaptionModel(Img2TextModel[str]):
@@ -18,6 +19,15 @@ class AdvancedCaptionModel(Img2TextModel[str]):
             )
 
         raise NotImplementedError
+
+    @measure_time
+    def predict(
+        self,
+        image: Image.Image,
+        task: Optional[str] = None,
+        prompt: Optional[str] = None,
+    ) -> str:
+        return self._predict(image, task, prompt)
 
     @classmethod
     def get_available_tasks(cls) -> list[str]:

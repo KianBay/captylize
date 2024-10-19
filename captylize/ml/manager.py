@@ -4,6 +4,11 @@ from typing import Type, Any, Optional, Literal
 
 import torch
 
+from captylize.ml.models.caption.advanced.florence_2 import (
+    Florence2FluxModel,
+    Florence2PromptGenModel,
+    Florence2StandardModel,
+)
 from captylize.ml.models.caption.basic.vit_gpt2_image_captioning import (
     VitGPT2CaptionModel,
 )
@@ -136,6 +141,8 @@ class ModelManager:
 
 model_manager = ModelManager(cache_dir="./model_cache")
 
+# ANALYSES REGISTRATION
+
 model_manager.register_model(
     ModelCategory.ANALYSES,
     AnalysesType.AGE,
@@ -160,6 +167,7 @@ model_manager.register_model(
     ViTImg2TextModel,
     is_default=True,
 )
+# BASIC CAPTION REGISTRATION
 
 model_manager.register_model(
     ModelCategory.GENERATION,
@@ -168,4 +176,55 @@ model_manager.register_model(
     "nlpconnect/vit-gpt2-image-captioning",
     VitGPT2CaptionModel,
     is_default=True,
+)
+
+# ADVANCED CAPTION REGISTRATION
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_large",
+    "microsoft/Florence-2-large",
+    Florence2StandardModel,
+    is_default=True,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_base",
+    "microsoft/Florence-2-base",
+    Florence2StandardModel,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_promptgen_large",
+    "MiaoshouAI/Florence-2-large-PromptGen-v1.5",
+    Florence2PromptGenModel,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_promptgen_base",
+    "MiaoshouAI/Florence-2-base-PromptGen-v1.5",
+    Florence2PromptGenModel,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_flux_large",
+    "gokaygokay/Florence-2-Flux-Large",
+    Florence2FluxModel,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.ADVANCED_CAPTION,
+    "florence2_flux_base",
+    "gokaygokay/Florence-2-Flux",
+    Florence2FluxModel,
 )
