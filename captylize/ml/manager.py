@@ -4,6 +4,9 @@ from typing import Type, Any, Optional, Literal
 
 import torch
 
+from captylize.ml.models.caption.basic.vit_gpt2_image_captioning import (
+    VitGPT2CaptionModel,
+)
 from captylize.ml.models.vit_model import ViTImg2TextModel
 
 
@@ -155,5 +158,14 @@ model_manager.register_model(
     "vit_nsfw_detector",
     "AdamCodd/vit-base-nsfw-detector",
     ViTImg2TextModel,
+    is_default=True,
+)
+
+model_manager.register_model(
+    ModelCategory.GENERATION,
+    GenerationType.BASIC_CAPTION,
+    "vit_gpt2_image_captioning",
+    "nlpconnect/vit-gpt2-image-captioning",
+    VitGPT2CaptionModel,
     is_default=True,
 )
