@@ -53,6 +53,6 @@ class Img2TextModel(ABC, Generic[T]):
     @measure_time
     def predict(self, image: Image.Image) -> T:
         if not self._is_loaded:
-            logger.debug(f"Model {self.__class__.__name__} is not loaded. Loading...")
+            logger.debug(f"Model {self.model_name} is not loaded. Loading...")
             self.load()
         return self._predict(image)
