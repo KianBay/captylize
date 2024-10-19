@@ -101,7 +101,10 @@ class ModelManager:
         if model_type not in self.loaded_models[category]:
             self.loaded_models[category][model_type] = {}
         self.loaded_models[category][model_type][name] = model_info.model_class(
-            model_location=model_info.path, cache_dir=self.cache_dir, device=self.device
+            model_name=model_info.name,
+            model_location=model_info.path,
+            cache_dir=self.cache_dir,
+            device=self.device,
         )
         self.loaded_models[category][model_type][name].load()
 

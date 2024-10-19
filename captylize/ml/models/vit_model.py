@@ -12,15 +12,16 @@ logger = get_logger(__name__)
 class ViTImg2TextModel(Img2TextModel[dict[str, float]]):
     def __init__(
         self,
+        model_name: str,
         model_location: str,
         cache_dir: str,
         device: Literal["cpu", "cuda", "mps"],
         use_safetensors: bool = True,
     ):
-        super().__init__(model_location, cache_dir, device, use_safetensors)
+        super().__init__(model_name, model_location, cache_dir, device, use_safetensors)
 
     def _load(self) -> None:
-        logger.info(f"Loading model {self.__class__.__name__}")
+        logger.info(f"Loading model {self.model_name} ({self.model_location})")
         self.model = ViTForImageClassification.from_pretrained(
             self.model_location,
             cache_dir=self.cache_dir,
