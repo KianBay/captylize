@@ -52,6 +52,8 @@ class ModelManager:
     def unload_models(self):
         for model in self.age_models.values():
             model.unload()
+        for model in self.emotion_models.values():
+            model.unload()
 
     def get_age_model(self, model_name: str = None) -> Img2TextModel:
         if model_name and model_name in self.age_models:
