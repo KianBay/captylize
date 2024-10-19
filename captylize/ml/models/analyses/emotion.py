@@ -35,7 +35,7 @@ class VitEmotionClassifier(Img2TextModel[dict[str, float]]):
         self.model = None
         self.processor = None
 
-    def _predict(self, image: Image.Image):
+    def _predict(self, image: Image.Image) -> dict[str, float]:
         inputs = self.processor(images=image, return_tensors="pt").to(self.device)
         with torch.no_grad():
             outputs = self.model(**inputs)
