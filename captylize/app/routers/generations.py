@@ -58,8 +58,12 @@ async def create_florence_2_caption(
         return CaptionResponse.from_prediction(
             prediction=result, prediction_duration=duration
         )
+
     except ValidationError as e:
         logger.error(f"Validation error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError as e:
+        logger.error(f"Value error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
     except RuntimeError as e:
         logger.error(f"Runtime error: {e}")
