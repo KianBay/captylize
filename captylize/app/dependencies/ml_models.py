@@ -41,7 +41,7 @@ async def get_nsfw_model(
     )
 
 
-async def get_basic_caption_model(
+async def get_vit_caption_model(
     model_name: str = Query(
         None,
         description="The name of the model to use. Can be left empty to use the default model.",
@@ -52,20 +52,21 @@ async def get_basic_caption_model(
     )
 
 
-async def get_advanced_caption_model(
+async def get_florence2_caption_model(
     model_name: str = Query(
         None,
         description="The name of the model to use. Can be left empty to use the default model.",
     ),
-    task: str = Query(
-        None,
-        description="The task to use the model for. Can be left empty to use the default task. Available tasks depend on specific model - check docs.",
+    version: str = Query(
+        "standard",
+        description="The Florence-2 variant to use: 'standard', 'promptgen' or 'flux'.",
     ),
-    prompt: str = Query(
-        None,
-        description="Prompt to guide the model's caption generation. Can be left empty to use the default prompt.",
+    size: str = Query(
+        "base",
+        description="The size of the model to use: 'base' or 'large'.",
     ),
 ) -> AdvancedCaptionModel:
+    model_key = f"florence2_{version}_{size}"
     return model_manager.get_model(
-        ModelCategory.GENERATION, GenerationType.ADVANCED_CAPTION, model_name
+        ModelCategory.GENERATION, GenerationType.ADVANCED_CAPTION, model_key
     )
