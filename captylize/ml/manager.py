@@ -19,7 +19,8 @@ class AnalysesType(StrEnum):
 
 
 class GenerationType(StrEnum):
-    CAPTION = "caption"
+    BASIC_CAPTION = "basic_caption"
+    ADVANCED_CAPTION = "advanced_caption"
 
 
 ModelType = AnalysesType | GenerationType
