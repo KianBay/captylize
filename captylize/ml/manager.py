@@ -46,6 +46,8 @@ class ModelManager:
     def load_models(self):
         for model in self.age_models.values():
             model.load()
+        for model in self.emotion_models.values():
+            model.load()
 
     def unload_models(self):
         for model in self.age_models.values():
