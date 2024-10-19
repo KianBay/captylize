@@ -1,7 +1,7 @@
 from typing import Literal
 from PIL import Image
 import torch
-from transformers import AutoImageProcessor, AutoModelForImageClassification
+from transformers import ViTImageProcessor, ViTForImageClassification
 from captylize.logger import get_logger
 from captylize.ml.models.ml_model import Img2TextModel
 
@@ -19,13 +19,13 @@ class VitEmotionClassifier(Img2TextModel[dict[str, float]]):
 
     def _load(self):
         logger.info(f"Loading model {self.__class__.__name__}")
-        self.model = AutoModelForImageClassification.from_pretrained(
+        self.model = ViTForImageClassification.from_pretrained(
             "dima806/facial_emotions_image_detection",
             cache_dir=self.cache_dir,
             use_safetensors=self.use_safetensors,
         ).to(self.device)
 
-        self.processor = AutoImageProcessor.from_pretrained(
+        self.processor = ViTImageProcessor.from_pretrained(
             "dima806/facial_emotions_image_detection",
             cache_dir=self.cache_dir,
         )
