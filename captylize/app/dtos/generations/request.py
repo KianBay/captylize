@@ -7,7 +7,7 @@ class BasicCaptionRequest(ImageRequest):
     pass
 
 
-class AdvancedCaptionParams(BaseModel):
+class Florence2CaptionParams(BaseModel):
     task: Optional[str] = Field(
         None,
         description="The task to use the model for. Available tasks depend on specific model - check docs.",
