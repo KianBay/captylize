@@ -7,10 +7,9 @@ from captylize.app.dependencies.ml_models import (
 )
 from captylize.app.dtos.generations.request import (
     AdvancedCaptionParams,
-    AdvancedCaptionRequest,
-    BasicCaptionRequest,
 )
 from captylize.app.dtos.generations.response import CaptionResponse
+from captylize.app.dtos.shared import ImageRequest
 from captylize.app.routers.shared import validate_image_input
 from captylize.app.utils import get_image
 from captylize.logger import get_logger
@@ -25,7 +24,7 @@ logger = get_logger(__name__)
 
 @router.post("/captions/basic")
 async def create_basic_caption(
-    image_input: BasicCaptionRequest = Depends(validate_image_input),
+    image_input: ImageRequest = Depends(validate_image_input),
     caption_model: BasicCaptionModel = Depends(get_basic_caption_model),
 ) -> CaptionResponse:
     try:
@@ -47,7 +46,7 @@ async def create_basic_caption(
 
 @router.post("/captions/advanced")
 async def create_advanced_caption(
-    image_input: AdvancedCaptionRequest = Depends(validate_image_input),
+    image_input: ImageRequest = Depends(validate_image_input),
     caption_params: AdvancedCaptionParams = Depends(),
     caption_model: AdvancedCaptionModel = Depends(get_advanced_caption_model),
 ) -> CaptionResponse:
