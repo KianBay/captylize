@@ -1,4 +1,4 @@
-from typing import Optional, ClassVar, TypeVar
+from typing import Optional, ClassVar
 from PIL import Image
 from captylize.ml.models.img_to_text_model import Img2TextModel
 from captylize.ml.utils.timing import measure_time

@@ -1,4 +1,6 @@
 from fastapi import Query
+from typing import Optional
+from captylize.app.dtos.generations.request import Florence2CaptionParams
 from captylize.ml.manager import (
     model_manager,
     ModelCategory,
@@ -41,31 +43,41 @@ async def get_nsfw_model(
     )
 
 
-async def get_basic_caption_model(
+async def get_vit_caption_model(
     model_name: str = Query(
         None,
         description="The name of the model to use. Can be left empty to use the default model.",
     ),
 ) -> BasicCaptionModel:
     return model_manager.get_model(
-        ModelCategory.GENERATION, GenerationType.BASIC_CAPTION, model_name
+        ModelCategory.GENERATION, GenerationType.VIT_CAPTION, model_name
     )
 
 
-async def get_advanced_caption_model(
-    model_name: str = Query(
+async def get_florence2_caption_params(
+    task: Optional[str] = Query(
         None,
-        description="The name of the model to use. Can be left empty to use the default model.",
+        description="The task to use the model for. Available tasks depend on specific model - check docs.",
     ),
-    task: str = Query(
-        None,
-        description="The task to use the model for. Can be left empty to use the default task. Available tasks depend on specific model - check docs.",
-    ),
-    prompt: str = Query(
+    prompt: Optional[str] = Query(
         None,
         description="Prompt to guide the model's caption generation. Can be left empty to use the default prompt.",
     ),
+) -> Florence2CaptionParams:
+    return Florence2CaptionParams(task=task, prompt=prompt)
+
+
+async def get_florence2_caption_model(
+    version: str = Query(
+        "standard",
+        description="The Florence-2 variant to use: 'standard', 'promptgen' or 'flux'.",
+    ),
+    size: str = Query(
+        "base",
+        description="The size of the model to use: 'base' or 'large'.",
+    ),
 ) -> AdvancedCaptionModel:
+    model_key = f"florence2_{version}_{size}"
     return model_manager.get_model(
-        ModelCategory.GENERATION, GenerationType.ADVANCED_CAPTION, model_name
+        ModelCategory.GENERATION, GenerationType.FLORENCE2_CAPTION, model_key
     )
