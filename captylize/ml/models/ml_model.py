@@ -13,10 +13,14 @@ logger = get_logger(__name__)
 class Img2TextModel(ABC, Generic[T]):
     def __init__(
         self,
+        model_name: str,
+        model_location: str,
         cache_dir: str,
         device: Literal["cpu", "cuda", "mps"],
         use_safetensors: bool = True,
     ):
+        self.model_name = model_name
+        self.model_location = model_location
         self.cache_dir = cache_dir
         self.device = device
         self.use_safetensors = use_safetensors

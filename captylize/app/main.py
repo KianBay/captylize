@@ -14,10 +14,10 @@ logger = get_logger(__name__)
 async def lifespan(app: FastAPI):
     logger.info("Starting up")
     # Before yield is on startup
-    model_manager.load_models()
+    model_manager.load_default_models()
     yield
     # After yield is on shutdown
-    model_manager.unload_models()
+    model_manager.unload_all_models()
     logger.info("Shutting down")
     await async_session.close()
 
