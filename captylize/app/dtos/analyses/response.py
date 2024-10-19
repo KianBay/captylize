@@ -7,12 +7,35 @@ AgeRange = Literal[
     "0-2", "3-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70+"
 ]
 
+
+class AgeRangeProb(BaseModel):
+    age_range: AgeRange
+    probability: float
+
+
 Emotion = Literal["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
+
+
+class EmotionProb(BaseModel):
+    emotion: Emotion
+    probability: float
 
 
 class AgeResponse(InferenceResponse):
     predicted_age: AgeRange
-    probabilities: dict[str, float]
+    probabilities: list[AgeRangeProb]
+
+
+# Nsfw categories are a todo for now,
+# Some models classify as sfw/nsfw, others as normal/nsfw, others as normal/porn/sexy etc
+# For now we stick to easily castable of FalconsAI & AdamCobb versions, which are normal/nsfw and sfw/nsfw respectively
+
+NsfwCategory = Literal["sfw", "nsfw", "normal"]
+
+
+class NsfwProb(BaseModel):
+    category: NsfwCategory
+    probability: float
 
     @classmethod
     def from_prediction(cls, prediction: dict[str, float], prediction_duration: float):
@@ -26,7 +49,7 @@ class AgeResponse(InferenceResponse):
 
 class EmotionResponse(InferenceResponse):
     predicted_emotion: Emotion
-    probabilities: dict[str, float]
+    probabilities: list[EmotionProb]
 
     @classmethod
     def from_prediction(cls, prediction: dict[str, float], prediction_duration: float):
@@ -39,8 +62,8 @@ class EmotionResponse(InferenceResponse):
 
 
 class NSFWResponse(InferenceResponse):
-    predicted_category: str
-    probabilities: dict[str, float]
+    predicted_category: NsfwCategory
+    probabilities: list[NsfwProb]
 
     @classmethod
     def from_prediction(cls, prediction: dict[str, float], prediction_duration: float):
