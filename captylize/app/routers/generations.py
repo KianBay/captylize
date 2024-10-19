@@ -7,7 +7,7 @@ from captylize.app.dtos.generations.response import BasicCaptionResponse
 from captylize.app.routers.shared import validate_image_input
 from captylize.app.utils import get_image
 from captylize.logger import get_logger
-from captylize.ml.models.img_to_text_model import Img2TextModel
+from captylize.ml.models.caption.basic.base import BasicCaptionModel
 
 
 router = APIRouter(prefix="/generations")
@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 @router.post("/captions/basic")
 async def create_basic_caption(
     image_input: BasicCaptionRequest = Depends(validate_image_input),
-    caption_model: Img2TextModel[str] = Depends(get_basic_caption_model),
+    caption_model: BasicCaptionModel = Depends(get_basic_caption_model),
 ) -> BasicCaptionResponse:
     try:
         image = await get_image(image_input.image_url, image_input.image_file)
