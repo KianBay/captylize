@@ -27,8 +27,8 @@ class AnalysesType(StrEnum):
 
 
 class GenerationType(StrEnum):
-    BASIC_CAPTION = "basic_caption"
-    ADVANCED_CAPTION = "advanced_caption"
+    VIT_CAPTION = "vit_caption"
+    FLORENCE2_CAPTION = "florence2_caption"
 
 
 ModelType = AnalysesType | GenerationType
@@ -167,7 +167,7 @@ model_manager.register_model(
     ViTImg2TextModel,
     is_default=True,
 )
-# BASIC CAPTION REGISTRATION
+# VIT CAPTION REGISTRATION
 
 model_manager.register_model(
     ModelCategory.GENERATION,
@@ -178,12 +178,12 @@ model_manager.register_model(
     is_default=True,
 )
 
-# ADVANCED CAPTION REGISTRATION
+# FLORENCE-2 BASED MODEL REGISTRATION
 
 model_manager.register_model(
     ModelCategory.GENERATION,
-    GenerationType.ADVANCED_CAPTION,
-    "florence2_large",
+    GenerationType.FLORENCE2_CAPTION,
+    "florence2_standard_large",
     "microsoft/Florence-2-large",
     Florence2StandardModel,
     is_default=True,
@@ -191,15 +191,15 @@ model_manager.register_model(
 
 model_manager.register_model(
     ModelCategory.GENERATION,
-    GenerationType.ADVANCED_CAPTION,
-    "florence2_base",
+    GenerationType.FLORENCE2_CAPTION,
+    "florence2_standard_base",
     "microsoft/Florence-2-base",
     Florence2StandardModel,
 )
 
 model_manager.register_model(
     ModelCategory.GENERATION,
-    GenerationType.ADVANCED_CAPTION,
+    GenerationType.FLORENCE2_CAPTION,
     "florence2_promptgen_large",
     "MiaoshouAI/Florence-2-large-PromptGen-v1.5",
     Florence2PromptGenModel,
@@ -207,7 +207,7 @@ model_manager.register_model(
 
 model_manager.register_model(
     ModelCategory.GENERATION,
-    GenerationType.ADVANCED_CAPTION,
+    GenerationType.FLORENCE2_CAPTION,
     "florence2_promptgen_base",
     "MiaoshouAI/Florence-2-base-PromptGen-v1.5",
     Florence2PromptGenModel,
@@ -215,7 +215,7 @@ model_manager.register_model(
 
 model_manager.register_model(
     ModelCategory.GENERATION,
-    GenerationType.ADVANCED_CAPTION,
+    GenerationType.FLORENCE2_CAPTION,
     "florence2_flux_large",
     "gokaygokay/Florence-2-Flux-Large",
     Florence2FluxModel,
@@ -223,7 +223,7 @@ model_manager.register_model(
 
 model_manager.register_model(
     ModelCategory.GENERATION,
-    GenerationType.ADVANCED_CAPTION,
+    GenerationType.FLORENCE2_CAPTION,
     "florence2_flux_base",
     "gokaygokay/Florence-2-Flux",
     Florence2FluxModel,
