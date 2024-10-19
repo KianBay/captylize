@@ -53,10 +53,6 @@ async def get_vit_caption_model(
 
 
 async def get_florence2_caption_model(
-    model_name: str = Query(
-        None,
-        description="The name of the model to use. Can be left empty to use the default model.",
-    ),
     version: str = Query(
         "standard",
         description="The Florence-2 variant to use: 'standard', 'promptgen' or 'flux'.",
