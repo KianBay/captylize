@@ -19,6 +19,8 @@ The following is a reference to the models used in this project organized by tas
 
 ## Captions
 
+**Florence-2 Models**
+
 - [Florence-2-large-PromptGen-v1.5](https://huggingface.co/MiaoshouAI/Florence-2-large-PromptGen-v1.5)
 
 - [Florence-2-base-PromptGen-v1.5](https://huggingface.co/MiaoshouAI/Florence-2-base-PromptGen-v1.5)
@@ -30,6 +32,10 @@ The following is a reference to the models used in this project organized by tas
 - [Florence-2-Flux-Large](https://huggingface.co/gokaygokay/Florence-2-Flux-Large)
 
 - [Florence-2-Flux](https://huggingface.co/gokaygokay/Florence-2-Flux)
+
+**VIT-GPT2 Models**
+
+- [vit-gpt2-image-captioning](https://huggingface.co/nlpconnect/vit-gpt2-image-captioning)
 
 ## ~~Detections~~ (coming soon™)
 
