@@ -20,6 +20,8 @@ Captylize is a simple API designed to facilitate easy prototyping of Hugging Fac
 - Support for both image URL and file upload inputs
 - Easy-to-use REST API endpoints
 
+For information about the models used, see the [MODELS.md](MODELS.md) file.
+
 ## Todo
 
 - [x] Implement basic image captioning with VIT-GPT2 model
