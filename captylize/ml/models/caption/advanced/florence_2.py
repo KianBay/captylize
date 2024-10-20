@@ -60,14 +60,18 @@ class Florence2Model(AdvancedCaptionModel):
             logger.debug("Model or processor not loaded, loading...")
             self._load()
 
-        task_prompt = f"<{task.upper()}>" if task else f"<{self.default_task.upper()}>"
+        task_to_use = task if task else self.default_task
+        task_prompt = f"<{task_to_use.upper()}>"
+        full_prompt = task_prompt
         if prompt:
-            full_prompt = task_prompt + prompt
-        else:
-            full_prompt = task_prompt
+            full_prompt += f" {prompt}"
         logger.info(
-            f"Generating {task if task else self.default_task} using prompt: {prompt if prompt else '<None>'}"
+            f"Generating {task_to_use} using prompt: {prompt if prompt else '<None>'}"
         )
+
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+
         torch_dtype = torch.float16 if self.device == "cuda" else torch.float32
         inputs = self.processor(text=full_prompt, images=image, return_tensors="pt").to(
             self.device, torch_dtype
