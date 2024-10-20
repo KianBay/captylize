@@ -1,15 +1,15 @@
 from fastapi import Query
 from typing import Optional
 from captylize.app.dtos.generations.request import Florence2CaptionParams
-from captylize.ml.manager import (
+from captylize.ml.models.config import (
     Florence2Size,
     Florence2Task,
     Florence2Variant,
-    model_manager,
     ModelCategory,
     AnalysesType,
     GenerationType,
 )
+from captylize.ml.manager import model_manager
 from captylize.ml.models.caption.advanced.base import AdvancedCaptionModel
 from captylize.ml.models.img_to_text_model import Img2TextModel
 from captylize.ml.models.caption.basic.base import BasicCaptionModel
