@@ -6,6 +6,7 @@ from captylize.logger import get_logger
 from captylize.app.routers import analyses, generations
 from captylize.app.http_client import async_session
 from captylize.ml.manager import model_manager
+from captylize.ml.models.registry import register_models
 
 logger = get_logger(__name__)
 
@@ -14,6 +15,7 @@ logger = get_logger(__name__)
 async def lifespan(app: FastAPI):
     logger.info("Starting up")
     # Before yield is on startup
+    register_models(model_manager)
     # model_manager.load_default_models() # Uncomment to load all default models
     yield
     # After yield is on shutdown

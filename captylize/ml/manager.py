@@ -1,45 +1,17 @@
-from dataclasses import dataclass
-from enum import StrEnum
 from typing import Type, Any, Optional, Literal
 
 import torch
 
-from captylize.ml.models.caption.advanced.florence_2 import (
-    Florence2FluxModel,
-    Florence2PromptGenModel,
-    Florence2StandardModel,
+from captylize.ml.models.config import (
+    ModelCategory,
+    ModelType,
+    ModelInfo,
+    Florence2Task,
 )
-from captylize.ml.models.caption.basic.vit_gpt2_image_captioning import (
-    VitGPT2CaptionModel,
-)
-from captylize.ml.models.vit_model import ViTImg2TextModel
 
+from captylize.logger import get_logger
 
-class ModelCategory(StrEnum):
-    ANALYSES = "analyses"
-    GENERATION = "generation"
-
-
-class AnalysesType(StrEnum):
-    AGE = "age"
-    EMOTION = "emotion"
-    NSFW = "nsfw"
-
-
-class GenerationType(StrEnum):
-    VIT_CAPTION = "vit_caption"
-    FLORENCE2_CAPTION = "florence2_caption"
-
-
-ModelType = AnalysesType | GenerationType
-
-
-@dataclass
-class ModelInfo:
-    name: str
-    path: str
-    model_class: Type[Any]
-    is_default: bool = False
+logger = get_logger(__name__)
 
 
 class ModelManager:
@@ -77,13 +49,23 @@ class ModelManager:
         path: str,
         model_class: Type[Any],
         is_default: bool = False,
+        available_tasks: Optional[list[Florence2Task]] = None,
+        default_task: Optional[Florence2Task] = None,
     ):
         if category not in self.registry:
+            logger.info(f"Register: category: {category}")
             self.registry[category] = {}
         if model_type not in self.registry[category]:
+            logger.info(f"Register: type: {model_type}, category: {category}")
             self.registry[category][model_type] = {}
+        logger.info(f"Register: {name}, type: {model_type}, category: {category}")
         self.registry[category][model_type][name] = ModelInfo(
-            name=name, path=path, model_class=model_class, is_default=is_default
+            name=name,
+            path=path,
+            model_class=model_class,
+            is_default=is_default,
+            available_tasks=available_tasks or [],
+            default_task=default_task,
         )
 
     def get_model(
@@ -115,6 +97,7 @@ class ModelManager:
             cache_dir=self.cache_dir,
             device=self.device,
         )
+        logger.info(f"Load: {name}, type: {model_type}, category: {category}")
         self.loaded_models[category][model_type][name].load()
 
     def load_default_models(self):
@@ -140,91 +123,3 @@ class ModelManager:
 
 
 model_manager = ModelManager(cache_dir="./model_cache")
-
-# ANALYSES REGISTRATION
-
-model_manager.register_model(
-    ModelCategory.ANALYSES,
-    AnalysesType.AGE,
-    "vit_age_classifier",
-    "nateraw/vit-age-classifier",
-    ViTImg2TextModel,
-    is_default=True,
-)
-model_manager.register_model(
-    ModelCategory.ANALYSES,
-    AnalysesType.EMOTION,
-    "vit_emotion_classifier",
-    "dima806/facial_emotions_image_detection",
-    ViTImg2TextModel,
-    is_default=True,
-)
-model_manager.register_model(
-    ModelCategory.ANALYSES,
-    AnalysesType.NSFW,
-    "vit_nsfw_detector",
-    "AdamCodd/vit-base-nsfw-detector",
-    ViTImg2TextModel,
-    is_default=True,
-)
-# VIT CAPTION REGISTRATION
-
-model_manager.register_model(
-    ModelCategory.GENERATION,
-    GenerationType.VIT_CAPTION,
-    "vit_gpt2_image_captioning",
-    "nlpconnect/vit-gpt2-image-captioning",
-    VitGPT2CaptionModel,
-    is_default=True,
-)
-
-# FLORENCE-2 BASED MODEL REGISTRATION
-
-model_manager.register_model(
-    ModelCategory.GENERATION,
-    GenerationType.FLORENCE2_CAPTION,
-    "florence2_standard_large",
-    "microsoft/Florence-2-large",
-    Florence2StandardModel,
-    is_default=True,
-)
-
-model_manager.register_model(
-    ModelCategory.GENERATION,
-    GenerationType.FLORENCE2_CAPTION,
-    "florence2_standard_base",
-    "microsoft/Florence-2-base",
-    Florence2StandardModel,
-)
-
-model_manager.register_model(
-    ModelCategory.GENERATION,
-    GenerationType.FLORENCE2_CAPTION,
-    "florence2_promptgen_large",
-    "MiaoshouAI/Florence-2-large-PromptGen-v1.5",
-    Florence2PromptGenModel,
-)
-
-model_manager.register_model(
-    ModelCategory.GENERATION,
-    GenerationType.FLORENCE2_CAPTION,
-    "florence2_promptgen_base",
-    "MiaoshouAI/Florence-2-base-PromptGen-v1.5",
-    Florence2PromptGenModel,
-)
-
-model_manager.register_model(
-    ModelCategory.GENERATION,
-    GenerationType.FLORENCE2_CAPTION,
-    "florence2_flux_large",
-    "gokaygokay/Florence-2-Flux-Large",
-    Florence2FluxModel,
-)
-
-model_manager.register_model(
-    ModelCategory.GENERATION,
-    GenerationType.FLORENCE2_CAPTION,
-    "florence2_flux_base",
-    "gokaygokay/Florence-2-Flux",
-    Florence2FluxModel,
-)
