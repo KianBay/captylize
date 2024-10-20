@@ -60,16 +60,24 @@ class Florence2Model(AdvancedCaptionModel):
             logger.debug("Model or processor not loaded, loading...")
             self._load()
 
-        task_prompt = f"<{task.upper()}>" if task else f"<{self.default_task.upper()}>"
+        task_to_use = task if task else self.default_task
+        task_token = f"<{task_to_use.upper()}>"
+
         if prompt:
-            full_prompt = task_prompt + prompt
-        else:
-            full_prompt = task_prompt
+            # We must edit the internal task with the prompt
+            if task_token in self.processor.task_prompts_without_inputs:
+                self.processor.task_prompts_without_inputs[task_token] = prompt
+                # In theory this works, but the model seems to be trained on the prompt, not so much the task token.
+
         logger.info(
-            f"Generating {task if task else self.default_task} using prompt: {prompt if prompt else '<None>'}"
+            f"Generating {task_to_use} using prompt: {prompt if prompt else '<None>'}"
         )
+
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+
         torch_dtype = torch.float16 if self.device == "cuda" else torch.float32
-        inputs = self.processor(text=full_prompt, images=image, return_tensors="pt").to(
+        inputs = self.processor(text=task_token, images=image, return_tensors="pt").to(
             self.device, torch_dtype
         )
 
@@ -85,11 +93,11 @@ class Florence2Model(AdvancedCaptionModel):
         )[0]
         logger.info(f"Generated text: {generated_text}")
         parsed_answer = self.processor.post_process_generation(
-            generated_text, task=task_prompt, image_size=(image.width, image.height)
+            generated_text, task=task_token, image_size=(image.width, image.height)
         )
         logger.info(f"Parsed answer: {parsed_answer}")
 
-        return parsed_answer[task_prompt]
+        return parsed_answer[task_token]
 
 
 class Florence2StandardModel(Florence2Model):
