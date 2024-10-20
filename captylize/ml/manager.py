@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Type, Any, Optional, Literal
 
@@ -34,12 +34,34 @@ class GenerationType(StrEnum):
 ModelType = AnalysesType | GenerationType
 
 
+class Florence2Task(StrEnum):
+    CAPTION = "caption"
+    DETAILED_CAPTION = "detailed_caption"
+    MORE_DETAILED_CAPTION = "more_detailed_caption"
+    GENERATE_TAGS = "generate_tags"
+    MIXED_CAPTION = "mixed_caption"
+    DESCRIPTION = "description"
+
+
+class Florence2Variant(StrEnum):
+    STANDARD = "standard"
+    PROMPTGEN = "promptgen"
+    FLUX = "flux"
+
+
+class Florence2Size(StrEnum):
+    BASE = "base"
+    LARGE = "large"
+
+
 @dataclass
 class ModelInfo:
     name: str
     path: str
     model_class: Type[Any]
     is_default: bool = False
+    available_tasks: list[Florence2Task] = field(default_factory=list)
+    default_task: Optional[Florence2Task] = None
 
 
 class ModelManager:
@@ -77,13 +99,20 @@ class ModelManager:
         path: str,
         model_class: Type[Any],
         is_default: bool = False,
+        available_tasks: Optional[list[Florence2Task]] = None,
+        default_task: Optional[Florence2Task] = None,
     ):
         if category not in self.registry:
             self.registry[category] = {}
         if model_type not in self.registry[category]:
             self.registry[category][model_type] = {}
         self.registry[category][model_type][name] = ModelInfo(
-            name=name, path=path, model_class=model_class, is_default=is_default
+            name=name,
+            path=path,
+            model_class=model_class,
+            is_default=is_default,
+            available_tasks=available_tasks or [],
+            default_task=default_task,
         )
 
     def get_model(
@@ -187,6 +216,12 @@ model_manager.register_model(
     "microsoft/Florence-2-large",
     Florence2StandardModel,
     is_default=True,
+    available_tasks=[
+        Florence2Task.CAPTION,
+        Florence2Task.DETAILED_CAPTION,
+        Florence2Task.MORE_DETAILED_CAPTION,
+    ],
+    default_task=Florence2Task.CAPTION,
 )
 
 model_manager.register_model(
@@ -195,6 +230,12 @@ model_manager.register_model(
     "florence2_standard_base",
     "microsoft/Florence-2-base",
     Florence2StandardModel,
+    available_tasks=[
+        Florence2Task.CAPTION,
+        Florence2Task.DETAILED_CAPTION,
+        Florence2Task.MORE_DETAILED_CAPTION,
+    ],
+    default_task=Florence2Task.CAPTION,
 )
 
 model_manager.register_model(
@@ -203,6 +244,14 @@ model_manager.register_model(
     "florence2_promptgen_large",
     "MiaoshouAI/Florence-2-large-PromptGen-v1.5",
     Florence2PromptGenModel,
+    available_tasks=[
+        Florence2Task.CAPTION,
+        Florence2Task.DETAILED_CAPTION,
+        Florence2Task.MORE_DETAILED_CAPTION,
+        Florence2Task.GENERATE_TAGS,
+        Florence2Task.MIXED_CAPTION,
+    ],
+    default_task=Florence2Task.CAPTION,
 )
 
 model_manager.register_model(
@@ -211,6 +260,14 @@ model_manager.register_model(
     "florence2_promptgen_base",
     "MiaoshouAI/Florence-2-base-PromptGen-v1.5",
     Florence2PromptGenModel,
+    available_tasks=[
+        Florence2Task.CAPTION,
+        Florence2Task.DETAILED_CAPTION,
+        Florence2Task.MORE_DETAILED_CAPTION,
+        Florence2Task.GENERATE_TAGS,
+        Florence2Task.MIXED_CAPTION,
+    ],
+    default_task=Florence2Task.CAPTION,
 )
 
 model_manager.register_model(
@@ -219,6 +276,10 @@ model_manager.register_model(
     "florence2_flux_large",
     "gokaygokay/Florence-2-Flux-Large",
     Florence2FluxModel,
+    available_tasks=[
+        Florence2Task.DESCRIPTION,
+    ],
+    default_task=Florence2Task.DESCRIPTION,
 )
 
 model_manager.register_model(
@@ -227,4 +288,8 @@ model_manager.register_model(
     "florence2_flux_base",
     "gokaygokay/Florence-2-Flux",
     Florence2FluxModel,
+    available_tasks=[
+        Florence2Task.DESCRIPTION,
+    ],
+    default_task=Florence2Task.DESCRIPTION,
 )

@@ -1,7 +1,8 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from captylize.app.dtos.shared import ImageRequest
+from captylize.ml.manager import Florence2Task
 
 
 class BasicCaptionRequest(ImageRequest):
@@ -9,11 +10,5 @@ class BasicCaptionRequest(ImageRequest):
 
 
 class Florence2CaptionParams(BaseModel):
-    task: Optional[str] = Field(
-        None,
-        description="The task to use the model for. Available tasks depend on specific model - check docs.",
-    )
-    prompt: Optional[str] = Field(
-        None,
-        description="Prompt to guide the model's caption generation. Can be left empty to use the default prompt.",
-    )
+    task: Florence2Task
+    prompt: Optional[str] = None
