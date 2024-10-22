@@ -21,7 +21,7 @@ async def get_age_model(
     request: AgeRequest = Depends(AgeRequest.as_form),
 ) -> Img2TextModel[dict[str, float]]:
     return model_manager.get_model(
-        ModelCategory.ANALYSES, AnalysesType.AGE, request.model_name
+        ModelCategory.ANALYSES, AnalysesType.AGE, request.name
     )
 
 
@@ -29,7 +29,7 @@ async def get_emotion_model(
     request: EmotionRequest = Depends(EmotionRequest.as_form),
 ) -> Img2TextModel[dict[str, float]]:
     return model_manager.get_model(
-        ModelCategory.ANALYSES, AnalysesType.EMOTION, request.model_name
+        ModelCategory.ANALYSES, AnalysesType.EMOTION, request.name
     )
 
 
@@ -37,7 +37,7 @@ async def get_nsfw_model(
     request: NSFWRequest = Depends(NSFWRequest.as_form),
 ) -> Img2TextModel[dict[str, float]]:
     return model_manager.get_model(
-        ModelCategory.ANALYSES, AnalysesType.NSFW, request.model_name
+        ModelCategory.ANALYSES, AnalysesType.NSFW, request.name
     )
 
 
@@ -45,7 +45,7 @@ async def get_vit_caption_model(
     request: BasicCaptionRequest = Depends(BasicCaptionRequest.as_form),
 ) -> BasicCaptionModel:
     return model_manager.get_model(
-        ModelCategory.GENERATION, GenerationType.VIT_CAPTION, request.model_name
+        ModelCategory.GENERATION, GenerationType.VIT_CAPTION, request.name
     )
 
 

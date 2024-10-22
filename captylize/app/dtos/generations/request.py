@@ -11,7 +11,7 @@ from captylize.ml.models.config import (
 
 
 class BasicCaptionRequest(BaseImageRequest):
-    model_name: VITCaptionModelName = Field(
+    name: VITCaptionModelName = Field(
         default=VITCaptionModelName.VIT_GPT2_IMAGE_CAPTIONING,
         description="The name of the model to use.",
     )
