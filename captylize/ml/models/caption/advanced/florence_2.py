@@ -50,7 +50,6 @@ class Florence2Model(AdvancedCaptionModel):
         self,
         image: Image.Image,
         task: Optional[str] = None,
-        prompt: Optional[str] = None,
     ) -> str:
         if task and task not in self.available_tasks:
             raise ValueError(
@@ -62,16 +61,6 @@ class Florence2Model(AdvancedCaptionModel):
 
         task_to_use = task if task else self.default_task
         task_token = f"<{task_to_use.upper()}>"
-
-        if prompt:
-            # We must edit the internal task with the prompt
-            if task_token in self.processor.task_prompts_without_inputs:
-                self.processor.task_prompts_without_inputs[task_token] = prompt
-                # In theory this works, but the model seems to be trained on the prompt, not so much the task token.
-
-        logger.info(
-            f"Generating {task_to_use} using prompt: {prompt if prompt else '<None>'}"
-        )
 
         if image.mode != "RGB":
             image = image.convert("RGB")
@@ -91,7 +80,7 @@ class Florence2Model(AdvancedCaptionModel):
         generated_text = self.processor.batch_decode(
             generated_ids, skip_special_tokens=False
         )[0]
-        logger.info(f"Generated text: {generated_text}")
+        logger.info(f"Generated {task_to_use}: {generated_text}")
         parsed_answer = self.processor.post_process_generation(
             generated_text, task=task_token, image_size=(image.width, image.height)
         )

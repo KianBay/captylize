@@ -50,9 +50,7 @@ async def create_florence_2_caption(
 ) -> CaptionResponse:
     try:
         image = await get_image(request)
-        result, duration = caption_model.predict(
-            image, task=request.task, prompt=request.prompt
-        )
+        result, duration = caption_model.predict(image, task=request.task)
         return CaptionResponse.from_prediction(
             prediction=result, prediction_duration=duration
         )
