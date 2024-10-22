@@ -1,4 +1,4 @@
-from fastapi import UploadFile, Form
+from fastapi import UploadFile, Form, File
 from pydantic import BaseModel, Field, HttpUrl
 from typing import Optional
 
@@ -12,17 +12,17 @@ class InferenceResponse(BaseModel):
 
 
 class BaseImageRequest(BaseModel):
-    image_url: Optional[HttpUrl] = Field(
-        None, description="The URL of the image to analyze."
-    )
-    image_file: Optional[UploadFile] = Field(
-        None, description="The image file to analyze."
-    )
+    image_url: Optional[HttpUrl] = Field(None)
+    image_file: Optional[UploadFile] = Field(None)
 
     @classmethod
     def as_form(
         cls,
-        image_url: Optional[HttpUrl] = Form(None),
-        image_file: Optional[UploadFile] = Form(None),
+        image_url: Optional[HttpUrl] = Form(
+            None, description="The URL of the image to analyze."
+        ),
+        image_file: Optional[UploadFile] = File(
+            None, description="The image file to analyze."
+        ),
     ):
         return cls(image_url=image_url, image_file=image_file)
