@@ -11,7 +11,6 @@ class AdvancedCaptionModel(Img2TextModel[str]):
         self,
         image: Image.Image,
         task: Optional[str] = None,
-        prompt: Optional[str] = None,
     ) -> str:
         if task and task not in self.available_tasks:
             raise ValueError(
@@ -25,9 +24,8 @@ class AdvancedCaptionModel(Img2TextModel[str]):
         self,
         image: Image.Image,
         task: Optional[str] = None,
-        prompt: Optional[str] = None,
     ) -> str:
-        return self._predict(image, task, prompt)
+        return self._predict(image, task)
 
     @classmethod
     def get_available_tasks(cls) -> list[str]:

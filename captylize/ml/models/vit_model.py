@@ -46,5 +46,6 @@ class ViTImg2TextModel(Img2TextModel[dict[str, float]]):
         result = {
             self.model.config.id2label[i]: prob for i, prob in enumerate(probabilities)
         }
+        logger.info(f"Predicted {result}")
 
         return result

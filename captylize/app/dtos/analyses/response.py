@@ -1,5 +1,4 @@
 from enum import StrEnum
-
 from pydantic import Field
 
 from captylize.app.dtos.shared import InferenceResponse
@@ -47,13 +46,16 @@ class AgeResponse(InferenceResponse):
     )
 
     @classmethod
-    def from_prediction(
-        cls, prediction: dict[AgeRange, float], prediction_duration: float
-    ):
-        predicted_age = max(prediction, key=prediction.get)
+    def from_prediction(cls, prediction: dict[str, float], prediction_duration: float):
+        mapped_prediction = {}
+        for k, v in prediction.items():
+            key = AgeRange.AGE_70_PLUS if k == "more than 70" else AgeRange(k)
+            mapped_prediction[key] = v
+
+        predicted_age = max(mapped_prediction, key=mapped_prediction.get)
         return cls(
             predicted_age=predicted_age,
-            probabilities=prediction,
+            probabilities=mapped_prediction,
             prediction_duration=prediction_duration,
         )
 
