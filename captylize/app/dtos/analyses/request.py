@@ -1,13 +1,13 @@
-from captylize.app.dtos.shared import ImageRequest
+from captylize.app.dtos.shared import BaseImageRequest
 
 
-class AgeRequest(ImageRequest):
+class AgeRequest(BaseImageRequest):
     pass
 
 
-class EmotionRequest(ImageRequest):
+class EmotionRequest(BaseImageRequest):
     pass
 
 
-class NSFWRequest(ImageRequest):
+class NSFWRequest(BaseImageRequest):
     pass

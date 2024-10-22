@@ -1,5 +1,5 @@
-from fastapi import UploadFile
-from pydantic import BaseModel, Field, HttpUrl, field_validator
+from fastapi import UploadFile, Form
+from pydantic import BaseModel, Field, HttpUrl
 from typing import Optional
 
 ALLOWED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png"]
@@ -11,27 +11,18 @@ class InferenceResponse(BaseModel):
     )
 
 
-class ImageRequest(BaseModel):
-    """
-    Accepts either an image URL or an image file, NOT both.
-    """
-
+class BaseImageRequest(BaseModel):
     image_url: Optional[HttpUrl] = Field(
-        None,
-        description=f"The URL of the image to analyze, must resolve to a {ALLOWED_IMAGE_EXTENSIONS} file.",
+        None, description="The URL of the image to analyze."
     )
     image_file: Optional[UploadFile] = Field(
-        None,
-        description=f"The image file to analyze, must be of type {ALLOWED_IMAGE_EXTENSIONS}.",
+        None, description="The image file to analyze."
     )
 
-    @field_validator("image_url")
-    def validate_image_url(cls, v: HttpUrl):
-        if v:
-            if not any(
-                v.path.lower().endswith(f".{ext}") for ext in ALLOWED_IMAGE_EXTENSIONS
-            ):
-                raise ValueError(
-                    f"Invalid image URL extension. Must be one of {ALLOWED_IMAGE_EXTENSIONS}"
-                )
-        return v
+    @classmethod
+    def as_form(
+        cls,
+        image_url: Optional[HttpUrl] = Form(None),
+        image_file: Optional[UploadFile] = Form(None),
+    ):
+        return cls(image_url=image_url, image_file=image_file)

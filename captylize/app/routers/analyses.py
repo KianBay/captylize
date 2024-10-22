@@ -8,7 +8,6 @@ from captylize.app.dtos.analyses.response import (
 )
 from captylize.logger import get_logger
 from captylize.app.dtos.analyses.request import AgeRequest, EmotionRequest, NSFWRequest
-from captylize.app.routers.shared import validate_image_input
 from captylize.app.utils import get_image
 from captylize.app.dependencies.ml_models import (
     get_age_model,
@@ -24,12 +23,12 @@ logger = get_logger(__name__)
 
 @router.post("/ages")
 async def create_age_analysis(
-    image_input: AgeRequest = Depends(validate_image_input),
+    request: AgeRequest = Depends(AgeRequest.as_form),
     age_model: Img2TextModel[dict[str, float]] = Depends(get_age_model),
 ) -> AgeResponse:
     logger.info("Creating age analysis")
     try:
-        image = await get_image(image_input.image_url, image_input.image_file)
+        image = await get_image(request)
         result, duration = age_model.predict(image)
         return AgeResponse.from_prediction(
             prediction=result, prediction_duration=duration
@@ -47,11 +46,11 @@ async def create_age_analysis(
 
 @router.post("/emotions")
 async def create_emotion_analysis(
-    image_input: EmotionRequest = Depends(validate_image_input),
+    request: EmotionRequest = Depends(EmotionRequest.as_form),
     emotion_model: Img2TextModel[dict[str, float]] = Depends(get_emotion_model),
 ) -> EmotionResponse:
     try:
-        image = await get_image(image_input.image_url, image_input.image_file)
+        image = await get_image(request)
         result, duration = emotion_model.predict(image)
         return EmotionResponse.from_prediction(
             prediction=result, prediction_duration=duration
@@ -69,11 +68,11 @@ async def create_emotion_analysis(
 
 @router.post("/nsfw")
 async def create_nsfw_analysis(
-    image_input: NSFWRequest = Depends(validate_image_input),
+    request: NSFWRequest = Depends(NSFWRequest.as_form),
     nsfw_model: Img2TextModel[dict[str, float]] = Depends(get_nsfw_model),
 ) -> NSFWResponse:
     try:
-        image = await get_image(image_input.image_url, image_input.image_file)
+        image = await get_image(request)
         result, duration = nsfw_model.predict(image)
         return NSFWResponse.from_prediction(
             prediction=result, prediction_duration=duration
