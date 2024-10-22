@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile
 from pydantic import ValidationError
+from typing import Optional
 
 
 from captylize.app.dependencies.ml_models import (
@@ -14,6 +15,7 @@ from captylize.app.dtos.generations.response import CaptionResponse
 from captylize.app.utils import get_image
 from captylize.logger import get_logger
 from captylize.ml.models.caption.advanced.base import AdvancedCaptionModel
+from captylize.ml.models.config import Florence2Task
 
 
 router = APIRouter(prefix="/generations")
@@ -45,16 +47,20 @@ async def create_vit_caption(
 
 @router.post("/captions/florence-2")
 async def create_florence_2_caption(
-    request: Florence2CaptionRequest = Depends(Florence2CaptionRequest.as_form),
+    task: Florence2Task = Form(...),
+    image_url: Optional[str] = Form(None),
+    image_file: Optional[UploadFile] = File(None),
     caption_model: AdvancedCaptionModel = Depends(get_florence2_caption_model),
 ) -> CaptionResponse:
+    request = Florence2CaptionRequest(
+        task=task, image_url=image_url, image_file=image_file
+    )
     try:
         image = await get_image(request)
         result, duration = caption_model.predict(image, task=request.task)
         return CaptionResponse.from_prediction(
             prediction=result, prediction_duration=duration
         )
-
     except ValidationError as e:
         logger.error(f"Validation error: {e}")
         raise HTTPException(status_code=422, detail=str(e))

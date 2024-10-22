@@ -1,9 +1,8 @@
 from fastapi import Query
-from typing import Optional
+
 
 from captylize.ml.models.config import (
     Florence2Size,
-    Florence2Task,
     Florence2Variant,
     ModelCategory,
     AnalysesType,
