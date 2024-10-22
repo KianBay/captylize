@@ -3,11 +3,18 @@ from fastapi import Form, File, UploadFile
 from typing import Optional
 from captylize.app.dtos.shared import BaseImageRequest
 from captylize.ml.manager import Florence2Task
-from captylize.ml.models.config import Florence2Variant, Florence2Size
+from captylize.ml.models.config import (
+    Florence2Variant,
+    Florence2Size,
+    VITCaptionModelName,
+)
 
 
 class BasicCaptionRequest(BaseImageRequest):
-    pass
+    model_name: VITCaptionModelName = Field(
+        default=VITCaptionModelName.VIT_GPT2_IMAGE_CAPTIONING,
+        description="The name of the model to use.",
+    )
 
 
 class Florence2CaptionRequest(BaseImageRequest):

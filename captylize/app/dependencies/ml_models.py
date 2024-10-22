@@ -1,6 +1,9 @@
-from fastapi import Query, Depends
+from fastapi import Depends
 from captylize.app.dtos.analyses.request import AgeRequest, EmotionRequest, NSFWRequest
-from captylize.app.dtos.generations.request import Florence2CaptionRequest
+from captylize.app.dtos.generations.request import (
+    BasicCaptionRequest,
+    Florence2CaptionRequest,
+)
 
 
 from captylize.ml.models.config import (
@@ -39,13 +42,10 @@ async def get_nsfw_model(
 
 
 async def get_vit_caption_model(
-    model_name: str = Query(
-        None,
-        description="The name of the model to use. Can be left empty to use the default model.",
-    ),
+    request: BasicCaptionRequest = Depends(BasicCaptionRequest.as_form),
 ) -> BasicCaptionModel:
     return model_manager.get_model(
-        ModelCategory.GENERATION, GenerationType.VIT_CAPTION, model_name
+        ModelCategory.GENERATION, GenerationType.VIT_CAPTION, request.model_name
     )
 
 

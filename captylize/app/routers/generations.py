@@ -14,6 +14,7 @@ from captylize.app.dtos.generations.response import CaptionResponse
 from captylize.app.utils import get_image
 from captylize.logger import get_logger
 from captylize.ml.models.caption.advanced.base import AdvancedCaptionModel
+from captylize.ml.models.caption.basic.base import BasicCaptionModel
 
 
 router = APIRouter(prefix="/generations")
@@ -24,7 +25,7 @@ logger = get_logger(__name__)
 @router.post("/captions/vit")
 async def create_vit_caption(
     request: BasicCaptionRequest = Depends(BasicCaptionRequest.as_form),
-    caption_model=Depends(get_vit_caption_model),
+    caption_model: BasicCaptionModel = Depends(get_vit_caption_model),
 ) -> CaptionResponse:
     try:
         image = await get_image(request)
