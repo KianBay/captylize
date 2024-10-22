@@ -1,4 +1,5 @@
-from fastapi import Query
+from fastapi import Query, Depends
+from captylize.app.dtos.generations.request import Florence2CaptionRequest
 
 
 from captylize.ml.models.config import (
@@ -57,16 +58,9 @@ async def get_vit_caption_model(
 
 
 async def get_florence2_caption_model(
-    variant: Florence2Variant = Query(
-        "standard",
-        description="The Florence-2 variant to use.",
-    ),
-    size: Florence2Size = Query(
-        "base",
-        description="The size of the model to use.",
-    ),
+    request: Florence2CaptionRequest = Depends(Florence2CaptionRequest.as_form),
 ) -> AdvancedCaptionModel:
-    model_key = f"florence2_{variant}_{size}"
+    model_key = f"florence2_{request.variant}_{request.size}"
     return model_manager.get_model(
         ModelCategory.GENERATION, GenerationType.FLORENCE2_CAPTION, model_key
     )
