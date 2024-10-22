@@ -4,6 +4,11 @@ from captylize.ml.models.config import (
     AnalysesType,
     GenerationType,
     Florence2Task,
+    AgeModelName,
+    EmotionModelName,
+    NSFWModelName,
+    VITCaptionModelName,
+    Florence2ModelName,
 )
 
 
@@ -20,7 +25,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.ANALYSES,
         AnalysesType.AGE,
-        "vit_age_classifier",
+        AgeModelName.VIT_AGE_CLASSIFIER,
         "nateraw/vit-age-classifier",
         ViTImg2TextModel,
         is_default=True,
@@ -28,7 +33,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.ANALYSES,
         AnalysesType.EMOTION,
-        "vit_emotion_classifier",
+        EmotionModelName.VIT_EMOTION_CLASSIFIER,
         "dima806/facial_emotions_image_detection",
         ViTImg2TextModel,
         is_default=True,
@@ -36,7 +41,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.ANALYSES,
         AnalysesType.NSFW,
-        "vit_nsfw_detector",
+        NSFWModelName.VIT_NSFW_DETECTOR,
         "AdamCodd/vit-base-nsfw-detector",
         ViTImg2TextModel,
         is_default=True,
@@ -46,7 +51,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.GENERATION,
         GenerationType.VIT_CAPTION,
-        "vit_gpt2_image_captioning",
+        VITCaptionModelName.VIT_GPT2_IMAGE_CAPTIONING,
         "nlpconnect/vit-gpt2-image-captioning",
         VitGPT2CaptionModel,
         is_default=True,
@@ -57,7 +62,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.GENERATION,
         GenerationType.FLORENCE2_CAPTION,
-        "florence2_standard_large",
+        Florence2ModelName.STANDARD_LARGE,
         "microsoft/Florence-2-large",
         Florence2StandardModel,
         is_default=True,
@@ -72,7 +77,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.GENERATION,
         GenerationType.FLORENCE2_CAPTION,
-        "florence2_standard_base",
+        Florence2ModelName.STANDARD_BASE,
         "microsoft/Florence-2-base",
         Florence2StandardModel,
         available_tasks=[
@@ -86,7 +91,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.GENERATION,
         GenerationType.FLORENCE2_CAPTION,
-        "florence2_promptgen_large",
+        Florence2ModelName.PROMPTGEN_LARGE,
         "MiaoshouAI/Florence-2-large-PromptGen-v1.5",
         Florence2PromptGenModel,
         available_tasks=[
@@ -102,7 +107,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.GENERATION,
         GenerationType.FLORENCE2_CAPTION,
-        "florence2_promptgen_base",
+        Florence2ModelName.PROMPTGEN_BASE,
         "MiaoshouAI/Florence-2-base-PromptGen-v1.5",
         Florence2PromptGenModel,
         available_tasks=[
@@ -118,7 +123,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.GENERATION,
         GenerationType.FLORENCE2_CAPTION,
-        "florence2_flux_large",
+        Florence2ModelName.FLUX_LARGE,
         "gokaygokay/Florence-2-Flux-Large",
         Florence2FluxModel,
         available_tasks=[
@@ -130,7 +135,7 @@ def register_models(model_manager: ModelManager):
     model_manager.register_model(
         ModelCategory.GENERATION,
         GenerationType.FLORENCE2_CAPTION,
-        "florence2_flux_base",
+        Florence2ModelName.FLUX_BASE,
         "gokaygokay/Florence-2-Flux",
         Florence2FluxModel,
         available_tasks=[

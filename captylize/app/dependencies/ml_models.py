@@ -1,10 +1,9 @@
 from fastapi import Query, Depends
+from captylize.app.dtos.analyses.request import AgeRequest, EmotionRequest, NSFWRequest
 from captylize.app.dtos.generations.request import Florence2CaptionRequest
 
 
 from captylize.ml.models.config import (
-    Florence2Size,
-    Florence2Variant,
     ModelCategory,
     AnalysesType,
     GenerationType,
@@ -16,33 +15,26 @@ from captylize.ml.models.caption.basic.base import BasicCaptionModel
 
 
 async def get_age_model(
-    model_name: str = Query(
-        None,
-        description="The name of the model to use. Can be left empty to use the default model.",
-    ),
+    request: AgeRequest = Depends(AgeRequest.as_form),
 ) -> Img2TextModel[dict[str, float]]:
-    return model_manager.get_model(ModelCategory.ANALYSES, AnalysesType.AGE, model_name)
+    return model_manager.get_model(
+        ModelCategory.ANALYSES, AnalysesType.AGE, request.model_name
+    )
 
 
 async def get_emotion_model(
-    model_name: str = Query(
-        None,
-        description="The name of the model to use. Can be left empty to use the default model.",
-    ),
+    request: EmotionRequest = Depends(EmotionRequest.as_form),
 ) -> Img2TextModel[dict[str, float]]:
     return model_manager.get_model(
-        ModelCategory.ANALYSES, AnalysesType.EMOTION, model_name
+        ModelCategory.ANALYSES, AnalysesType.EMOTION, request.model_name
     )
 
 
 async def get_nsfw_model(
-    model_name: str = Query(
-        None,
-        description="The name of the model to use. Can be left empty to use the default model.",
-    ),
+    request: NSFWRequest = Depends(NSFWRequest.as_form),
 ) -> Img2TextModel[dict[str, float]]:
     return model_manager.get_model(
-        ModelCategory.ANALYSES, AnalysesType.NSFW, model_name
+        ModelCategory.ANALYSES, AnalysesType.NSFW, request.model_name
     )
 
 

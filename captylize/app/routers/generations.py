@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import ValidationError
-from typing import Optional
 
 
 from captylize.app.dependencies.ml_models import (
@@ -15,7 +14,6 @@ from captylize.app.dtos.generations.response import CaptionResponse
 from captylize.app.utils import get_image
 from captylize.logger import get_logger
 from captylize.ml.models.caption.advanced.base import AdvancedCaptionModel
-from captylize.ml.models.config import Florence2Task, Florence2Variant, Florence2Size
 
 
 router = APIRouter(prefix="/generations")
